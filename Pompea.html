@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Missione Diplomatica</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(247, 201, 72, 0.22), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.14), transparent 30%),
+        linear-gradient(135deg, #101728, #17213a, #23395d);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 18px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 680px;
+      background: rgba(255, 255, 255, 0.11);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 28px;
+      padding: 28px;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.38);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app::before {
+      content: "TOP SECRET";
+      position: absolute;
+      top: 28px;
+      right: -42px;
+      transform: rotate(32deg);
+      background: rgba(247, 201, 72, 0.95);
+      color: #101728;
+      padding: 8px 55px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 1.2px;
+      opacity: 0.85;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #f7c948;
+      color: #111827;
+      padding: 9px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 34px;
+      line-height: 1.1;
+      margin-bottom: 14px;
+      max-width: 520px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      line-height: 1.6;
+      opacity: 0.9;
+      margin-bottom: 26px;
+      max-width: 570px;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.13);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 22px;
+      padding: 24px;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .progress-wrap {
+      width: 100%;
+      height: 9px;
+      background: rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #f7c948;
+      border-radius: 999px;
+      transition: width 0.28s ease;
+    }
+
+    .step-label {
+      color: #f7c948;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .question {
+      font-size: 23px;
+      font-weight: 750;
+      line-height: 1.35;
+      margin-bottom: 20px;
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 16px;
+      cursor: pointer;
+      font-weight: 800;
+      transition: 0.18s ease;
+      font-size: 16px;
+    }
+
+    .start-btn,
+    .accept-btn {
+      background: #f7c948;
+      color: #111827;
+      padding: 16px 24px;
+      box-shadow: 0 12px 24px rgba(247, 201, 72, 0.18);
+    }
+
+    .start-btn:hover,
+    .accept-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      background: #ffdc68;
+    }
+
+    .accept-btn {
+      width: 100%;
+      margin-top: 18px;
+      background: #ffffff;
+      color: #111827;
+      font-size: 18px;
+    }
+
+    .accept-btn:hover {
+      background: #f7c948;
+    }
+
+    .option-btn {
+      background: rgba(255, 255, 255, 0.94);
+      color: #111827;
+      padding: 15px 17px;
+      text-align: left;
+      line-height: 1.35;
+      border: 2px solid transparent;
+    }
+
+    .option-btn:hover {
+      transform: translateY(-2px);
+      background: #f7c948;
+      border-color: rgba(255, 255, 255, 0.55);
+    }
+
+    .small-note {
+      margin-top: 17px;
+      opacity: 0.74;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .result-title {
+      font-size: 30px;
+      color: #f7c948;
+      margin-bottom: 14px;
+    }
+
+    .result-text {
+      font-size: 18px;
+      line-height: 1.65;
+      margin-bottom: 18px;
+    }
+
+    .mission-card {
+      background: rgba(0, 0, 0, 0.28);
+      border-radius: 18px;
+      padding: 18px;
+      line-height: 1.8;
+      font-size: 15px;
+      margin-top: 18px;
+      text-align: left;
+    }
+
+    .invito {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(247, 201, 72, 0.16);
+      border: 1px solid rgba(247, 201, 72, 0.42);
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .score-pill {
+      display: inline-block;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      background: rgba(247, 201, 72, 0.95);
+      color: #111827;
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .copy-note {
+      margin-top: 12px;
+      font-size: 13px;
+      opacity: 0.78;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.58);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 20;
+    }
+
+    .modal-overlay.hidden {
+      display: none;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 430px;
+      background: #ffffff;
+      color: #111827;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.38);
+      text-align: center;
+      animation: pop 0.22s ease;
+    }
+
+    .modal-emoji {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    .modal h2 {
+      font-size: 23px;
+      margin-bottom: 10px;
+    }
+
+    .modal p {
+      font-size: 16px;
+      line-height: 1.5;
+      opacity: 0.86;
+      margin-bottom: 18px;
+      white-space: pre-line;
+    }
+
+    .modal button {
+      background: #111827;
+      color: #fff;
+      padding: 13px 20px;
+      width: 100%;
+    }
+
+    .modal button:hover {
+      background: #263244;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 12px;
+      opacity: 0.65;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pop {
+      from {
+        opacity: 0;
+        transform: scale(0.92);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 560px) {
+      body {
+        align-items: flex-start;
+        padding: 14px;
+      }
+
+      .app {
+        padding: 22px;
+        border-radius: 24px;
+      }
+
+      .app::before {
+        display: none;
+      }
+
+      h1 {
+        font-size: 27px;
+      }
+
+      .subtitle {
+        font-size: 15px;
+      }
+
+      .question {
+        font-size: 19px;
+      }
+
+      .option-btn {
+        font-size: 15px;
+        padding: 14px;
+      }
+
+      .panel {
+        padding: 20px;
+      }
+
+      .result-text {
+        font-size: 16px;
+      }
+
+      .invito {
+        font-size: 17px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <div class="badge">🕵️ Fascicolo riservato</div>
+
+    <section id="intro">
+      <h1>Operazione Diplomazia a 5 Stelle</h1>
+
+      <p class="subtitle">
+        Il Ministero degli Affari Romantici Esteri ha individuato una candidata molto interessante:
+        una ragazza che lavora in un hotel 5 stelle e sogna di diventare interprete d’ambasciata.
+        Prima dell’incarico ufficiale, però, deve superare una missione speciale.
+      </p>
+
+      <button class="start-btn" id="startBtn">Accetta la missione</button>
+
+      <p class="small-note">
+        Nota diplomatica: il test è scientificamente non valido, ma emotivamente abbastanza rischioso.
+      </p>
+    </section>
+
+    <section class="panel hidden" id="game">
+      <div class="progress-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <div class="step-label" id="stepLabel"></div>
+      <div class="question" id="questionText"></div>
+      <div class="options" id="optionsContainer"></div>
+    </section>
+
+    <section class="panel hidden" id="result">
+      <h2 class="result-title">Missione completata 🎖️</h2>
+
+      <p class="result-text" id="resultText"></p>
+
+      <div class="score-pill" id="scoreText"></div>
+
+      <div class="mission-card" id="missionCard"></div>
+
+      <div class="invito">
+        Invito ufficiale:<br>
+        ti va di accettare una missione diplomatica con me?
+      </div>
+
+      <button class="accept-btn" onclick="acceptMission()">Accetta missione</button>
+
+      <p class="copy-note">
+        Cliccando, il recap della missione viene copiato negli appunti e si apre Instagram.
+        Dovrai solo incollarlo e inviarlo.
+      </p>
+    </section>
+
+    <p class="footer">
+      Classificato come: gioco simpatico, rischio sorriso elevato.
+    </p>
+  </main>
+
+  <div class="modal-overlay hidden" id="customModal">
+    <div class="modal">
+      <div class="modal-emoji" id="modalEmoji">✨</div>
+      <h2 id="modalTitle">Messaggio</h2>
+      <p id="modalText"></p>
+      <button id="modalBtn">Continua</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        number: "Prova 1 — Ispezione qualità",
+        text: "Da 1 a 5 stelle, com’è stata la tua esperienza con me?",
+        recapLabel: "Recensione esperienza",
+        options: [
+          {
+            text: "⭐️⭐️⭐️⭐️⭐️ 5 stelle, servizio impeccabile",
+            shortText: "5 stelle, servizio impeccabile",
+            points: 5,
+            id: "five-stars"
+          },
+          {
+            text: "⭐️⭐️⭐️⭐️ 4 stelle, manca ancora qualcosa",
+            shortText: "4 stelle, manca ancora qualcosa",
+            points: 4,
+            id: "four-stars"
+          },
+          {
+            text: "⭐️⭐️⭐️ 3 stelle, serve una cena riparatoria",
+            shortText: "3 stelle, serve una cena riparatoria",
+            points: 3,
+            id: "three-stars"
+          },
+          {
+            text: "⚠️ Non classificabile: troppo pericoloso",
+            shortText: "Non classificabile: troppo pericoloso",
+            points: 5,
+            id: "danger"
+          }
+        ]
+      },
+      {
+        number: "Prova 2 — Traduzione diplomatica",
+        text: "Scegli la lingua ufficiale con cui tradurre: “Mi piacerebbe rivederti”.",
+        recapLabel: "Lingua scelta",
+        options: [
+          {
+            text: "🇬🇧 Inglese — I would really like to see you again.",
+            shortText: "Inglese — I would really like to see you again.",
+            points: 5
+          },
+          {
+            text: "🇮🇹 Italiano — Mi piacerebbe davvero rivederti.",
+            shortText: "Italiano — Mi piacerebbe davvero rivederti.",
+            points: 5
+          },
+          {
+            text: "🇷🇺 Russo — Мне бы очень хотелось увидеть тебя снова.",
+            shortText: "Russo — Мне бы очень хотелось увидеть тебя снова.",
+            points: 5
+          },
+          {
+            text: "🇪🇸 Spagnolo — Me gustaría mucho volver a verte.",
+            shortText: "Spagnolo — Me gustaría mucho volver a verte.",
+            points: 5
+          },
+          {
+            text: "🇩🇪 Tedesco — Ich würde dich wirklich gerne wiedersehen.",
+            shortText: "Tedesco — Ich würde dich wirklich gerne wiedersehen.",
+            points: 5
+          }
+        ]
+      },
+      {
+        number: "Prova 3 — Crisi internazionale",
+        text: "Un ragazzo simpatico, affascinante e modestissimo vuole invitarti a uscire. Quale frase dovrebbe usare?",
+        recapLabel: "Formula diplomatica",
+        options: [
+          {
+            text: "Ti va una missione diplomatica con aperitivo?",
+            shortText: "Ti va una missione diplomatica con aperitivo?",
+            points: 5
+          },
+          {
+            text: "Propongo un tavolo di negoziazione davanti a un drink.",
+            shortText: "Propongo un tavolo di negoziazione davanti a un drink.",
+            points: 5
+          },
+          {
+            text: "Cena ufficiale, dress code: sorriso.",
+            shortText: "Cena ufficiale, dress code: sorriso.",
+            points: 5
+          },
+          {
+            text: "Dipende dal livello dell’ambasciatore.",
+            shortText: "Dipende dal livello dell’ambasciatore.",
+            points: 4
+          }
+        ]
+      },
+      {
+        number: "Prova 4 — Missione segreta",
+        text: "Ultima prova: il Ministero ti assegna una missione top secret. Quale scegli?",
+        recapLabel: "Missione scelta",
+        options: [
+          {
+            text: "Operazione Spritz: ridere troppo davanti a un aperitivo.",
+            shortText: "Operazione Spritz: ridere troppo davanti a un aperitivo.",
+            points: 5,
+            mission: "aperitivo"
+          },
+          {
+            text: "Protocollo Cena: il locale è top secret.",
+            shortText: "Protocollo Cena: il locale è top secret.",
+            points: 5,
+            mission: "cena"
+          },
+          {
+            text: "Piano Gelato: questa volta evitiamo di farcelo buttare addosso.",
+            shortText: "Piano Gelato: questa volta evitiamo di farcelo buttare addosso.",
+            points: 5,
+            mission: "gelato"
+          },
+          {
+            text: "Missione Sorpresa:",
+            shortText: "Missione Sorpresa",
+            points: 5,
+            mission: "sorpresa"
+          }
+        ]
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let selectedMission = "missione a sorpresa";
+    let pendingAction = null;
+    let selectedAnswers = [];
+
+    const intro = document.getElementById("intro");
+    const game = document.getElementById("game");
+    const result = document.getElementById("result");
+    const startBtn = document.getElementById("startBtn");
+    const stepLabel = document.getElementById("stepLabel");
+    const questionText = document.getElementById("questionText");
+    const optionsContainer = document.getElementById("optionsContainer");
+    const progressBar = document.getElementById("progressBar");
+    const resultText = document.getElementById("resultText");
+    const scoreText = document.getElementById("scoreText");
+    const missionCard = document.getElementById("missionCard");
+
+    const customModal = document.getElementById("customModal");
+    const modalEmoji = document.getElementById("modalEmoji");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalText = document.getElementById("modalText");
+    const modalBtn = document.getElementById("modalBtn");
+
+    startBtn.addEventListener("click", startGame);
+
+    modalBtn.addEventListener("click", function () {
+      closeModal();
+
+      if (typeof pendingAction === "function") {
+        const action = pendingAction;
+        pendingAction = null;
+        action();
+      } else {
+        pendingAction = null;
+      }
+    });
+
+    function startGame() {
+      intro.classList.add("hidden");
+      result.classList.add("hidden");
+      game.classList.remove("hidden");
+
+      currentQuestion = 0;
+      score = 0;
+      selectedMission = "missione a sorpresa";
+      pendingAction = null;
+      selectedAnswers = [];
+
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      const progress = (currentQuestion / questions.length) * 100;
+
+      progressBar.style.width = progress + "%";
+      stepLabel.textContent = q.number;
+      questionText.textContent = q.text;
+      optionsContainer.innerHTML = "";
+
+      q.options.forEach(function (option) {
+        const button = document.createElement("button");
+        button.className = "option-btn";
+        button.textContent = option.text;
+
+        button.addEventListener("click", function () {
+          handleAnswer(option);
+        });
+
+        optionsContainer.appendChild(button);
+      });
+    }
+
+    function handleAnswer(option) {
+      const q = questions[currentQuestion];
+
+      score += option.points;
+
+      selectedAnswers.push({
+        label: q.recapLabel,
+        answer: option.shortText || option.text
+      });
+
+      if (option.mission) {
+        selectedMission = option.mission;
+      }
+
+      if (currentQuestion === 0) {
+        if (option.id === "five-stars") {
+          showModal(
+            "✨",
+            "Ottima scelta",
+            "Il Ministero prende nota: valutazione eccellente, rischio secondo incontro molto alto.",
+            goNext
+          );
+        } else {
+          showModal(
+            "😌",
+            "C’è margine di miglioramento",
+            "Dai, c'è comunque margine di miglioramento... ho un motivo in più per continuare.",
+            goNext
+          );
+        }
+
+        return;
+      }
+
+      if (currentQuestion === 1) {
+        showModal(
+          "🌍",
+          "Traduzione approvata",
+          "La candidata dimostra ottime capacità linguistiche. Il dossier diventa sempre più interessante.",
+          goNext
+        );
+
+        return;
+      }
+
+      if (currentQuestion === 2) {
+        showModal(
+          "🤝",
+          "Crisi evitata",
+          "L’invito è stato formulato senza incidenti diplomatici. Risultato raro, quasi sospetto.",
+          goNext
+        );
+
+        return;
+      }
+
+      goNext();
+    }
+
+    function goNext() {
+      currentQuestion++;
+
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      progressBar.style.width = "100%";
+      game.classList.add("hidden");
+      result.classList.remove("hidden");
+
+      let message;
+
+      if (score >= 19) {
+        message = "La candidata ha superato brillantemente la selezione. Il Ministero conferma: profilo diplomatico eccellente, simpatia sopra la media e rischio flirt decisamente elevato.";
+      } else if (score >= 16) {
+        message = "La candidata è ufficialmente approvata. Tuttavia, il Ministero richiede una verifica pratica sul campo per completare la valutazione.";
+      } else {
+        message = "La candidatura è promettente, ma il Ministero ritiene necessario un secondo incontro per chiarire alcuni punti del dossier.";
+      }
+
+      resultText.textContent = message;
+      scoreText.textContent = "Punteggio finale: " + score + "/20";
+
+      missionCard.innerHTML = `
+        <strong>Esito del dossier:</strong><br>
+        Posizione: Interprete diplomatica speciale<br>
+        Missione consigliata: ${capitalize(selectedMission)}<br>
+        Dress code: sorriso<br>
+        Lingua ufficiale: sguardi, battute sottili e un po’ di diplomazia<br>
+        Livello rischio: potremmo volerci rivedere<br>
+        Stato pratica: approvata con riserva di aperitivo
+      `;
+    }
+
+    function buildRecapMessage() {
+      let recap = "Missione accettata 😌\n\n";
+      recap += "Ecco il mio dossier diplomatico:\n";
+
+      selectedAnswers.forEach(function (item) {
+        recap += "• " + item.label + ": " + item.answer + "\n";
+      });
+
+      recap += "\nPunteggio finale: " + score + "/20";
+      recap += "\nMissione consigliata: " + capitalize(selectedMission);
+      recap += "\n\nDirei che il Ministero può procedere con la verifica pratica 😉";
+
+      return recap;
+    }
+
+    function acceptMission() {
+      const message = buildRecapMessage();
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(message).then(function () {
+          showModal(
+            "📋",
+            "Recap copiato",
+            "Ho copiato il messaggio negli appunti.\nOra si apre Instagram: devi solo incollarlo e inviarlo.",
+            function () {
+              window.open("https://ig.me/m/aledelu28", "_blank");
+            }
+          );
+        }).catch(function () {
+          showModal(
+            "📲",
+            "Instagram in apertura",
+            "Non sono riuscito a copiare automaticamente il messaggio.\nSi aprirà Instagram, ma dovrai scriverlo manualmente.",
+            function () {
+              window.open("https://ig.me/m/aledelu28", "_blank");
+            }
+          );
+        });
+      } else {
+        showModal(
+          "📲",
+          "Instagram in apertura",
+          "Il browser non consente la copia automatica da questa pagina.\nSi aprirà Instagram, ma dovrai scrivere il messaggio manualmente.",
+          function () {
+            window.open("https://ig.me/m/aledelu28", "_blank");
+          }
+        );
+      }
+    }
+
+    function showModal(emoji, title, text, callback) {
+      modalEmoji.textContent = emoji;
+      modalTitle.textContent = title;
+      modalText.textContent = text;
+      pendingAction = callback;
+      customModal.classList.remove("hidden");
+    }
+
+    function closeModal() {
+      customModal.classList.add("hidden");
+    }
+
+    function capitalize(text) {
+      if (!text) return "";
+      return text.charAt(0).toUpperCase() + text.slice(1);
+    }
+  </script>
+</body>
+</html>
