@@ -142,7 +142,6 @@
     }
 
     .start-btn,
-    .restart-btn,
     .accept-btn {
       background: #f7c948;
       color: #111827;
@@ -151,15 +150,17 @@
     }
 
     .start-btn:hover,
-    .restart-btn:hover,
     .accept-btn:hover {
       transform: translateY(-2px) scale(1.02);
       background: #ffdc68;
     }
 
     .accept-btn {
+      width: 100%;
+      margin-top: 18px;
       background: #ffffff;
       color: #111827;
+      font-size: 18px;
     }
 
     .accept-btn:hover {
@@ -221,13 +222,6 @@
       line-height: 1.45;
     }
 
-    .result-actions {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-      margin-top: 18px;
-    }
-
     .score-pill {
       display: inline-block;
       margin-top: 8px;
@@ -238,6 +232,14 @@
       border-radius: 999px;
       font-size: 14px;
       font-weight: 900;
+    }
+
+    .copy-note {
+      margin-top: 12px;
+      font-size: 13px;
+      opacity: 0.78;
+      line-height: 1.45;
+      text-align: center;
     }
 
     .modal-overlay {
@@ -282,6 +284,7 @@
       line-height: 1.5;
       opacity: 0.86;
       margin-bottom: 18px;
+      white-space: pre-line;
     }
 
     .modal button {
@@ -325,6 +328,11 @@
     }
 
     @media (max-width: 560px) {
+      body {
+        align-items: flex-start;
+        padding: 14px;
+      }
+
       .app {
         padding: 22px;
         border-radius: 24px;
@@ -353,6 +361,14 @@
 
       .panel {
         padding: 20px;
+      }
+
+      .result-text {
+        font-size: 16px;
+      }
+
+      .invito {
+        font-size: 17px;
       }
     }
   </style>
@@ -402,10 +418,12 @@
         ti va di accettare una missione diplomatica con me?
       </div>
 
-      <div class="result-actions">
-        <button class="accept-btn" onclick="acceptMission()">Accetta missione</button>
-        <button class="restart-btn" onclick="restartGame()">Ripeti la missione</button>
-      </div>
+      <button class="accept-btn" onclick="acceptMission()">Accetta missione</button>
+
+      <p class="copy-note">
+        Cliccando, il recap della missione viene copiato negli appunti e si apre Instagram.
+        Dovrai solo incollarlo e inviarlo.
+      </p>
     </section>
 
     <p class="footer">
@@ -427,24 +445,29 @@
       {
         number: "Prova 1 — Ispezione qualità",
         text: "Da 1 a 5 stelle, com’è stata la tua esperienza con me?",
+        recapLabel: "Recensione esperienza",
         options: [
           {
             text: "⭐️⭐️⭐️⭐️⭐️ 5 stelle, servizio impeccabile",
+            shortText: "5 stelle, servizio impeccabile",
             points: 5,
             id: "five-stars"
           },
           {
             text: "⭐️⭐️⭐️⭐️ 4 stelle, manca ancora qualcosa",
+            shortText: "4 stelle, manca ancora qualcosa",
             points: 4,
             id: "four-stars"
           },
           {
             text: "⭐️⭐️⭐️ 3 stelle, serve una cena riparatoria",
+            shortText: "3 stelle, serve una cena riparatoria",
             points: 3,
             id: "three-stars"
           },
           {
             text: "⚠️ Non classificabile: troppo pericoloso",
+            shortText: "Non classificabile: troppo pericoloso",
             points: 5,
             id: "danger"
           }
@@ -453,25 +476,31 @@
       {
         number: "Prova 2 — Traduzione diplomatica",
         text: "Scegli la lingua ufficiale con cui tradurre: “Mi piacerebbe rivederti”.",
+        recapLabel: "Lingua scelta",
         options: [
           {
             text: "🇬🇧 Inglese — I would really like to see you again.",
+            shortText: "Inglese — I would really like to see you again.",
             points: 5
           },
           {
             text: "🇮🇹 Italiano — Mi piacerebbe davvero rivederti.",
+            shortText: "Italiano — Mi piacerebbe davvero rivederti.",
             points: 5
           },
           {
             text: "🇷🇺 Russo — Мне бы очень хотелось увидеть тебя снова.",
+            shortText: "Russo — Мне бы очень хотелось увидеть тебя снова.",
             points: 5
           },
           {
             text: "🇪🇸 Spagnolo — Me gustaría mucho volver a verte.",
+            shortText: "Spagnolo — Me gustaría mucho volver a verte.",
             points: 5
           },
           {
             text: "🇩🇪 Tedesco — Ich würde dich wirklich gerne wiedersehen.",
+            shortText: "Tedesco — Ich würde dich wirklich gerne wiedersehen.",
             points: 5
           }
         ]
@@ -479,21 +508,26 @@
       {
         number: "Prova 3 — Crisi internazionale",
         text: "Un ragazzo simpatico, affascinante e modestissimo vuole invitarti a uscire. Quale frase dovrebbe usare?",
+        recapLabel: "Formula diplomatica",
         options: [
           {
             text: "Ti va una missione diplomatica con aperitivo?",
+            shortText: "Ti va una missione diplomatica con aperitivo?",
             points: 5
           },
           {
             text: "Propongo un tavolo di negoziazione davanti a un drink.",
+            shortText: "Propongo un tavolo di negoziazione davanti a un drink.",
             points: 5
           },
           {
             text: "Cena ufficiale, dress code: sorriso.",
+            shortText: "Cena ufficiale, dress code: sorriso.",
             points: 5
           },
           {
             text: "Dipende dal livello dell’ambasciatore.",
+            shortText: "Dipende dal livello dell’ambasciatore.",
             points: 4
           }
         ]
@@ -501,24 +535,29 @@
       {
         number: "Prova 4 — Missione segreta",
         text: "Ultima prova: il Ministero ti assegna una missione top secret. Quale scegli?",
+        recapLabel: "Missione scelta",
         options: [
           {
             text: "Operazione Spritz: ridere troppo davanti a un aperitivo.",
+            shortText: "Operazione Spritz: ridere troppo davanti a un aperitivo.",
             points: 5,
             mission: "aperitivo"
           },
           {
             text: "Protocollo Cena: il locale è top secret.",
+            shortText: "Protocollo Cena: il locale è top secret.",
             points: 5,
             mission: "cena"
           },
           {
             text: "Piano Gelato: questa volta evitiamo di farcelo buttare addosso.",
+            shortText: "Piano Gelato: questa volta evitiamo di farcelo buttare addosso.",
             points: 5,
             mission: "gelato"
           },
           {
             text: "Missione Sorpresa:",
+            shortText: "Missione Sorpresa",
             points: 5,
             mission: "sorpresa"
           }
@@ -530,6 +569,7 @@
     let score = 0;
     let selectedMission = "missione a sorpresa";
     let pendingAction = null;
+    let selectedAnswers = [];
 
     const intro = document.getElementById("intro");
     const game = document.getElementById("game");
@@ -572,6 +612,7 @@
       score = 0;
       selectedMission = "missione a sorpresa";
       pendingAction = null;
+      selectedAnswers = [];
 
       showQuestion();
     }
@@ -599,7 +640,14 @@
     }
 
     function handleAnswer(option) {
+      const q = questions[currentQuestion];
+
       score += option.points;
+
+      selectedAnswers.push({
+        label: q.recapLabel,
+        answer: option.shortText || option.text
+      });
 
       if (option.mission) {
         selectedMission = option.mission;
@@ -689,6 +737,56 @@
       `;
     }
 
+    function buildRecapMessage() {
+      let recap = "Missione accettata 😌\n\n";
+      recap += "Ecco il mio dossier diplomatico:\n";
+
+      selectedAnswers.forEach(function (item) {
+        recap += "• " + item.label + ": " + item.answer + "\n";
+      });
+
+      recap += "\nPunteggio finale: " + score + "/20";
+      recap += "\nMissione consigliata: " + capitalize(selectedMission);
+      recap += "\n\nDirei che il Ministero può procedere con la verifica pratica 😉";
+
+      return recap;
+    }
+
+    function acceptMission() {
+      const message = buildRecapMessage();
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(message).then(function () {
+          showModal(
+            "📋",
+            "Recap copiato",
+            "Ho copiato il messaggio negli appunti.\nOra si apre Instagram: devi solo incollarlo e inviarlo.",
+            function () {
+              window.open("https://ig.me/m/aledelu28", "_blank");
+            }
+          );
+        }).catch(function () {
+          showModal(
+            "📲",
+            "Instagram in apertura",
+            "Non sono riuscito a copiare automaticamente il messaggio.\nSi aprirà Instagram, ma dovrai scriverlo manualmente.",
+            function () {
+              window.open("https://ig.me/m/aledelu28", "_blank");
+            }
+          );
+        });
+      } else {
+        showModal(
+          "📲",
+          "Instagram in apertura",
+          "Il browser non consente la copia automatica da questa pagina.\nSi aprirà Instagram, ma dovrai scrivere il messaggio manualmente.",
+          function () {
+            window.open("https://ig.me/m/aledelu28", "_blank");
+          }
+        );
+      }
+    }
+
     function showModal(emoji, title, text, callback) {
       modalEmoji.textContent = emoji;
       modalTitle.textContent = title;
@@ -701,31 +799,8 @@
       customModal.classList.add("hidden");
     }
 
-    function restartGame() {
-      result.classList.add("hidden");
-      game.classList.add("hidden");
-      intro.classList.remove("hidden");
-      progressBar.style.width = "0%";
-      currentQuestion = 0;
-      score = 0;
-      selectedMission = "missione a sorpresa";
-      pendingAction = null;
-      closeModal();
-    }
-
-    function acceptMission() {
-      const message = "Missione accettata 😌";
-
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(message).finally(function () {
-          window.open("https://ig.me/m/aledelu28", "_blank");
-        });
-      } else {
-        window.open("https://ig.me/m/aledelu28", "_blank");
-      }
-    }
-
     function capitalize(text) {
+      if (!text) return "";
       return text.charAt(0).toUpperCase() + text.slice(1);
     }
   </script>
